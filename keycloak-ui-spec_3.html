@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)file:///Users/mac/Downloads/keycloak-ui-spec_3.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keycloak UI Spec — Agathos</title>
+<link href="./keycloak-ui-spec_3_files/css2" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f0; color: #222; line-height: 1.6; }
+
+  .page-header { background: #fff; border-bottom: 1px solid #e5e5e0; padding: 32px 0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+  .page-header h1 { font-size: 28px; font-weight: 600; color: #111; margin-bottom: 4px; }
+  .page-header p { font-size: 15px; color: #888; }
+  .page-header .meta { display: flex; gap: 24px; margin-top: 12px; font-size: 13px; color: #aaa; }
+
+  .tabs { background: #fff; border-bottom: 1px solid #e5e5e0; position: sticky; top: 0; z-index: 10; }
+  .tabs .container { display: flex; gap: 0; }
+  .tab-btn { padding: 14px 20px; font-size: 14px; font-weight: 500; color: #999; background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; font-family: inherit; transition: all 0.15s; }
+  .tab-btn:hover { color: #555; }
+  .tab-btn.active { color: #1a5276; border-bottom-color: #1a5276; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .screens-grid { display: grid; grid-template-columns: 1fr; gap: 32px; padding: 32px 0; max-width: 640px; margin: 0 auto; }
+  .screen-card { background: #fff; border-radius: 12px; border: 1px solid #e5e5e0; overflow: hidden; }
+  .screen-card-header { padding: 16px 20px; border-bottom: 1px solid #f0f0eb; display: flex; align-items: center; gap: 10px; }
+  .screen-card-header .num { background: #e8f4fd; color: #1a5276; font-size: 12px; font-weight: 600; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .screen-card-header .name { font-size: 15px; font-weight: 600; color: #222; }
+  .screen-card-body { padding: 20px; display: flex; justify-content: center; }
+
+  .kc-page { background: #33bfed; border-radius: 8px; width: 100%; max-width: 480px; overflow: hidden; padding: 24px 20px 20px; }
+  .kc-card { background: #fff; border-radius: 8px; padding: 32px 28px; }
+  .kc-eng { font-size: 11px; color: #bbb; text-align: right; margin-bottom: 12px; }
+  .kc-title { font-size: 18px; font-weight: 600; color: #222; text-align: center; margin-bottom: 16px; }
+  .kc-body { font-size: 13px; color: #777; line-height: 1.6; margin-bottom: 20px; }
+  .kc-alert { background: #fef8e8; border-top: 2.5px solid #e8a723; border-radius: 4px; padding: 10px 14px; display: flex; gap: 8px; align-items: flex-start; font-size: 12px; color: #8a6d3b; line-height: 1.5; margin-bottom: 20px; }
+  .kc-alert-icon { flex-shrink: 0; width: 16px; height: 16px; background: #e8a723; color: #fff; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+
+  .kc-btn-primary { display: block; width: 100%; background: #1a5276; color: #fff; border: none; border-radius: 4px; padding: 11px 20px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; letter-spacing: 0.2px; font-family: inherit; transition: background 0.15s; }
+  .kc-btn-primary:hover { background: #1a6da0; }
+  .kc-btn-primary:active { background: #154463; transform: scale(0.98); }
+
+  .field-wrap { margin-bottom: 16px; }
+  .field-label { font-size: 12px; color: #555; margin-bottom: 4px; font-weight: 500; }
+  .field-input { border: 1px solid #ccc; border-radius: 4px; padding: 9px 12px; font-size: 13px; color: #333; background: #fff; width: 100%; display: block; font-family: inherit; outline: none; transition: border-color 0.15s; }
+  .field-input:focus { border-color: #1a5276; box-shadow: 0 0 0 2px rgba(26,82,118,0.12); }
+  .field-input:hover:not(:focus) { border-color: #999; }
+  .field-input.ro { background: #f7f7f7; color: #999; cursor: not-allowed; }
+  .helper { font-size: 11px; color: #999; font-weight: 400; margin-top: 3px; line-height: 1.4; }
+
+  .pw-wrap { position: relative; }
+  .pw-wrap input { padding-right: 40px; }
+  .pw-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #bbb; font-size: 18px; padding: 2px; display: flex; align-items: center; justify-content: center; transition: color 0.15s; }
+  .pw-toggle:hover { color: #555; }
+  .pw-toggle svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .cb-row { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; margin-bottom: 16px; cursor: pointer; }
+  .cb-row input { accent-color: #1a5276; cursor: pointer; }
+
+  .screen-notes { padding: 16px 20px; border-top: 1px solid #f0f0eb; background: #fafaf7; }
+  .screen-notes h4 { font-size: 13px; font-weight: 600; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .note-item { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 6px; padding-left: 16px; position: relative; }
+  .note-item::before { content: ''; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: #1a5276; }
+
+  .css-section { padding: 32px 0; max-width: 800px; margin: 0 auto; }
+  .css-intro { font-size: 14px; color: #888; margin-bottom: 16px; }
+  .css-intro code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; background: #eee; padding: 2px 8px; border-radius: 4px; color: #555; }
+  .css-block-full { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; background: #1a1a2e; color: #e0e0e0; border-radius: 10px; padding: 24px 28px; line-height: 1.8; white-space: pre-wrap; overflow-x: auto; }
+  .css-block-full .comment { color: #6a6a8a; }
+  .css-block-full .selector { color: #7ec8e3; }
+  .css-block-full .prop { color: #c9a0dc; }
+  .css-block-full .val { color: #a8d8a8; }
+  .copy-btn { display: inline-flex; align-items: center; gap: 6px; background: #1a5276; color: #fff; border: none; border-radius: 6px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 16px; font-family: inherit; transition: background 0.15s; }
+  .copy-btn:hover { background: #1a6da0; }
+
+  .summary-section { padding: 32px 0; }
+  .summary-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid #e5e5e0; }
+  .summary-table th { background: #fafaf7; padding: 12px 16px; text-align: left; font-size: 13px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e5e0; }
+  .summary-table td { padding: 12px 16px; font-size: 14px; color: #444; border-bottom: 1px solid #f0f0eb; vertical-align: top; }
+  .summary-table tr:last-child td { border-bottom: none; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px; }
+  .badge-spacing { background: #e8f4fd; color: #1a5276; }
+  .badge-typo { background: #f3e8fd; color: #6b3fa0; }
+  .badge-component { background: #e8fde8; color: #2d7a2d; }
+  .screens-list { font-size: 12px; color: #999; }
+
+  @media (max-width: 768px) {
+    .container { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="container">
+    <h1>Keycloak UI Spec</h1>
+    <p>Proposed UI improvements for the Agathos Keycloak login flow</p>
+    <div class="meta">
+      <span>May 22, 2026</span>
+      <span>4 screens</span>
+      <span>6 CSS changes</span>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="container">
+    <button class="tab-btn active" onclick="showTab(&#39;screens&#39;)">Screens</button>
+    <button class="tab-btn" onclick="showTab(&#39;css&#39;)">CSS for Elaine</button>
+    <button class="tab-btn" onclick="showTab(&#39;summary&#39;)">Change summary</button>
+  </div>
+</div>
+
+<div class="tab-content active" id="tab-screens">
+  <div class="container">
+    <div class="screens-grid">
+
+      <!-- Screen 1: Almost there -->
+      <div class="screen-card">
+        <div class="screen-card-header">
+          <div class="num">1</div>
+          <div class="name">Almost there</div>
+        </div>
+        <div class="screen-card-body">
+          <div class="kc-page">
+            <div class="kc-card">
+              <div class="kc-eng">English</div>
+              <div class="kc-title">Almost there</div>
+              <div class="kc-body">To activate your account, you'll need to update your password and confirm a few profile details.</div>
+              <button class="kc-btn-primary">Get started</button>
+            </div>
+          </div>
+        </div>
+        <div class="screen-notes">
+          <h4>Changes</h4>
+          <div class="note-item">"Get started" is now a primary button instead of a text link</div>
+          <div class="note-item">Increased card padding (32px 40px) for breathing room</div>
+          <div class="note-item">Body text bumped to 14px with 1.6 line-height</div>
+        </div>
+      </div>
+
+      <!-- Screen 2: Update password -->
+      <div class="screen-card">
+        <div class="screen-card-header">
+          <div class="num">2</div>
+          <div class="name">Update password</div>
+        </div>
+        <div class="screen-card-body">
+          <div class="kc-page">
+            <div class="kc-card">
+              <div class="kc-eng">English</div>
+              <div class="kc-title">Update password</div>
+              <div class="kc-alert">
+                <div class="kc-alert-icon">!</div>
+                <span>Set your own password to secure your account.</span>
+              </div>
+              <div class="field-wrap">
+                <div class="field-label">New Password</div>
+                <div class="pw-wrap">
+                  <input type="password" class="field-input" value="mypassword" id="pw1">
+                  <button class="pw-toggle" onclick="togglePw(&#39;pw1&#39;, this)" aria-label="Toggle password visibility">
+                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="field-wrap">
+                <div class="field-label">Confirm password</div>
+                <div class="pw-wrap">
+                  <input type="password" class="field-input" value="mypassword" id="pw2">
+                  <button class="pw-toggle" onclick="togglePw(&#39;pw2&#39;, this)" aria-label="Toggle password visibility">
+                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  </button>
+                </div>
+              </div>
+              <label class="cb-row"><input type="checkbox" checked=""> Sign out from other devices</label>
+              <button class="kc-btn-primary">Next</button>
+            </div>
+          </div>
+        </div>
+        <div class="screen-notes">
+          <h4>Changes</h4>
+          <div class="note-item">CTA label changed from "Submit" to "Next"</div>
+          <div class="note-item">20px gap between yellow alert box and first field (was ~4px)</div>
+          <div class="note-item">Consistent 16px spacing between field groups</div>
+        </div>
+      </div>
+
+      <!-- Screen 3: Update account information -->
+      <div class="screen-card">
+        <div class="screen-card-header">
+          <div class="num">3</div>
+          <div class="name">Update account information</div>
+        </div>
+        <div class="screen-card-body">
+          <div class="kc-page">
+            <div class="kc-card">
+              <div class="kc-eng">English</div>
+              <div class="kc-title">Update account information</div>
+              <div class="kc-alert">
+                <div class="kc-alert-icon">!</div>
+                <span>You need to update your user profile to activate your account.</span>
+              </div>
+              <div class="field-wrap">
+                <div class="field-label">Username</div>
+                <input type="text" class="field-input" value="agathosdev2xx2">
+                <div class="helper">Your username will be made public, please update it if you wish.</div>
+              </div>
+              <div class="field-wrap">
+                <div class="field-label">Email</div>
+                <input type="email" class="field-input ro" value="agathosdev2@gmail.com" readonly="">
+              </div>
+              <div class="field-wrap">
+                <div class="field-label">First name</div>
+                <input type="text" class="field-input" value="Random">
+              </div>
+              <div class="field-wrap">
+                <div class="field-label">Last name</div>
+                <input type="text" class="field-input" value="Random">
+              </div>
+              <button class="kc-btn-primary">Submit</button>
+            </div>
+          </div>
+        </div>
+        <div class="screen-notes">
+          <h4>Changes</h4>
+          <div class="note-item">20px gap between yellow alert box and Username field</div>
+          <div class="note-item">Helper text changed to font-weight: 400, size 12px, color #888 (was bold)</div>
+          <div class="note-item">Consistent 16px spacing between field groups</div>
+        </div>
+      </div>
+
+      <!-- Screen 4: You're all set! -->
+      <div class="screen-card">
+        <div class="screen-card-header">
+          <div class="num">4</div>
+          <div class="name">You're all set!</div>
+        </div>
+        <div class="screen-card-body">
+          <div class="kc-page">
+            <div class="kc-card">
+              <div class="kc-eng">English</div>
+              <div class="kc-title">You're all set!</div>
+              <div class="kc-body">Your account is ready. You can now manage your tickets, explore projects, and connect with the agathos community.</div>
+              <button class="kc-btn-primary">Back to agathos</button>
+            </div>
+          </div>
+        </div>
+        <div class="screen-notes">
+          <h4>Changes</h4>
+          <div class="note-item">"Back to agathos" is now a primary button instead of a text link</div>
+          <div class="note-item">Increased card padding for breathing room</div>
+          <div class="note-item">Body text bumped to 14px with 1.6 line-height</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-css">
+  <div class="container">
+    <div class="css-section">
+      <p class="css-intro">Add to <code>themes/agathos/login/resources/css/login.css</code> — paste at the end of the file.</p>
+      <pre class="css-block-full" id="css-code"><span class="comment">/* ========================================
+   Agathos Keycloak Theme — UI Fixes
+   ======================================== */</span>
+
+<span class="comment">/* 1. Alert box → first field spacing (screens 2 &amp; 3) */</span>
+<span class="selector">.alert-warning</span> {
+  <span class="prop">margin-bottom</span>: <span class="val">20px</span>;
+}
+
+<span class="selector">#kc-content-wrapper</span> {
+  <span class="prop">margin-top</span>: <span class="val">20px</span>;
+}
+
+<span class="comment">/* 2. Consistent field group gaps (screens 2 &amp; 3) */</span>
+<span class="selector">.pf-c-form__group</span> {
+  <span class="prop">margin-bottom</span>: <span class="val">16px</span>;
+}
+
+<span class="comment">/* 3. Helper text — lighter weight (screen 3) */</span>
+<span class="selector">.pf-c-form__helper-text</span>,
+<span class="selector">.form-group .help-block</span> {
+  <span class="prop">font-weight</span>: <span class="val">400</span>;
+  <span class="prop">font-size</span>: <span class="val">12px</span>;
+  <span class="prop">color</span>: <span class="val">#888</span>;
+  <span class="prop">margin-top</span>: <span class="val">4px</span>;
+  <span class="prop">margin-bottom</span>: <span class="val">0</span>;
+}
+
+<span class="comment">/* 4. Card padding — more breathing room (screens 1 &amp; 4) */</span>
+<span class="selector">.card-pf</span> {
+  <span class="prop">padding</span>: <span class="val">32px 40px</span>;
+}
+
+<span class="comment">/* 5. Body text readability (screens 1 &amp; 4) */</span>
+<span class="selector">#kc-content-wrapper p</span> {
+  <span class="prop">font-size</span>: <span class="val">14px</span>;
+  <span class="prop">line-height</span>: <span class="val">1.6</span>;
+  <span class="prop">color</span>: <span class="val">#555</span>;
+}
+
+<span class="comment">/* 6. CTA links → primary button style (screens 1 &amp; 4) */</span>
+<span class="selector">#kc-content-wrapper a:not(.alert a)</span> {
+  <span class="prop">display</span>: <span class="val">inline-block</span>;
+  <span class="prop">background</span>: <span class="val">#1a5276</span>;
+  <span class="prop">color</span>: <span class="val">#fff</span>;
+  <span class="prop">padding</span>: <span class="val">10px 24px</span>;
+  <span class="prop">border-radius</span>: <span class="val">4px</span>;
+  <span class="prop">text-decoration</span>: <span class="val">none</span>;
+  <span class="prop">font-weight</span>: <span class="val">500</span>;
+  <span class="prop">font-size</span>: <span class="val">14px</span>;
+  <span class="prop">margin-top</span>: <span class="val">12px</span>;
+  <span class="prop">transition</span>: <span class="val">background 0.15s</span>;
+}
+
+<span class="selector">#kc-content-wrapper a:not(.alert a):hover</span> {
+  <span class="prop">background</span>: <span class="val">#1a6da0</span>;
+}
+
+<span class="comment">/* 7. CTA label changes (via Keycloak messages)
+   Screen 2: "Submit" → "Next"
+   Change in messages.properties, not CSS */</span></pre>
+      <button class="copy-btn" onclick="copyCSS()">Copy CSS</button>
+    </div>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-summary">
+  <div class="container">
+    <div class="summary-section">
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Change</th>
+            <th>Type</th>
+            <th>Screens</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Alert → field spacing</td>
+            <td><span class="badge badge-spacing">Spacing</span></td>
+            <td><span class="screens-list">2, 3</span></td>
+            <td>Increase gap from ~4px to 20px between yellow alert box and first form field</td>
+          </tr>
+          <tr>
+            <td>Field group spacing</td>
+            <td><span class="badge badge-spacing">Spacing</span></td>
+            <td><span class="screens-list">2, 3</span></td>
+            <td>Consistent 16px margin-bottom on all .pf-c-form__group</td>
+          </tr>
+          <tr>
+            <td>Helper text weight</td>
+            <td><span class="badge badge-typo">Typography</span></td>
+            <td><span class="screens-list">3</span></td>
+            <td>Change from bold to font-weight: 400, size 12px, color #888</td>
+          </tr>
+          <tr>
+            <td>Card padding</td>
+            <td><span class="badge badge-spacing">Spacing</span></td>
+            <td><span class="screens-list">1, 4</span></td>
+            <td>Increase to 32px 40px for more breathing room</td>
+          </tr>
+          <tr>
+            <td>Body text size</td>
+            <td><span class="badge badge-typo">Typography</span></td>
+            <td><span class="screens-list">1, 4</span></td>
+            <td>Bump to 14px, line-height 1.6, color #555</td>
+          </tr>
+          <tr>
+            <td>CTA links → buttons</td>
+            <td><span class="badge badge-component">Component</span></td>
+            <td><span class="screens-list">1, 4</span></td>
+            <td>"Get started" and "Back to agathos" styled as primary buttons</td>
+          </tr>
+          <tr>
+            <td>CTA label: "Next"</td>
+            <td><span class="badge badge-component">Component</span></td>
+            <td><span class="screens-list">2</span></td>
+            <td>Change Submit button label to "Next" (in messages.properties)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function togglePw(id, btn) {
+  var input = document.getElementById(id);
+  var svg = btn.querySelector('svg');
+  if (input.type === 'password') {
+    input.type = 'text';
+    svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  } else {
+    input.type = 'password';
+    svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
+}
+
+function copyCSS() {
+  var el = document.getElementById('css-code');
+  var text = el.textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = 'Copy CSS'; }, 2000);
+  });
+}
+</script>
+
+
+
+</body></html>
